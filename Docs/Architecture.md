@@ -8,6 +8,8 @@ Widely supported, allows C, C++, Arduino and uPy
 
 # FW
 
+## Framework
+
 Chose Arduino over bare C, uPy, etc.
 
 **Advantages**
@@ -24,6 +26,12 @@ Does the trick and enables for quickest implementation, without hitting its limi
 - Flashing takes >30s
 - Huge initial size, lots of boilerplate (>200KB)
 - Lots of externs, hard to follow fns
+
+## Code
+
+The ISRs detect button presses, triggering flags to increase, decrease or reset the counter.
+
+The main loop checks the counter value, updating the flash memory and the screen when it detects a change.
 
 # SCREEN
 
