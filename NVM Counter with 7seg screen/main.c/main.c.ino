@@ -1,8 +1,9 @@
-// Constants and Pin Definitions
-const uint8_t LED_PIN = 2;       // LED pin
+#include <LittleFS.h>
+
 const uint8_t D2_PIN = 4;        // D2 (GPIO4)
 const uint8_t D1_PIN = 5;        // D1 (GPIO5)
-const uint16_t debounce_ms = 2000;  // ESP8266/32 have [issues](https://github.com/espressif/arduino-esp32/issues/1111) with falling/rising edges!
+const uint16_t debounce_ms = 2000;  // ESP8266/32 have issues with falling/rising edges! (https://github.com/espressif/arduino-esp32/issues/1111) 
+const uint8_t LED_PIN = 2;       // LED pin
 
 // Variables for debounce and detection states
 volatile uint32_t like_update_time = 0;
@@ -10,115 +11,97 @@ volatile uint32_t dislike_update_time = 0;
 volatile bool like_detected = false;
 volatile bool dislike_detected = false;
 
-// Function Declarations
+// Constants and Pin Definitions
+
+static int8_t file_status = -1;
+
+// "Main" ino
 void setup();
 void loop();
-static void handleButtonPresses();
-static void handleHeartbeat();
-static void updateLikeStatus();
-static void updateDislikeStatus();
 
-// Interrupt Service Routines (ISR)
-IRAM_ATTR static void ISR_like_press();
-IRAM_ATTR static void ISR_dislike_press();
+#if (0)
+// Button/LED
+void handleHeartbeat();
+
+//FS
+void initialize_lfs();
+void writeFile();
+int8_t readFile();
+#endif
 
 //----------------------------
 // Setup Function
 //----------------------------
 
 void setup() {
-  // Initialize Serial Communication
+  // Init Serial Communication
   Serial.begin(115200);
   Serial.println("Start");
 
-  // Set up LED pin as output
-  pinMode(LED_PIN, OUTPUT);
+  // Init IO
+  setup_led();
+  setup_buttons();
+  setup_ISR();
 
-  // Set up buttons as inputs with pull-up resistors
-  pinMode(D1_PIN, INPUT_PULLUP);
-  pinMode(D2_PIN, INPUT_PULLUP);
+  // Init flash memory
+  static int16_t like_counter = 0;
+  initialize_lfs();
+  writeFile("/like_counter.txt", "12");
+  readFile("/like_counter.txt", &like_counter);
+  Serial.printf("Current like counter %d", like_counter);
 
-  // Attach interrupts for button presses
-  attachInterrupt(digitalPinToInterrupt(D1_PIN), ISR_like_press, RISING);
-  attachInterrupt(digitalPinToInterrupt(D2_PIN), ISR_dislike_press, RISING);
-
-  // Set up screen (Placeholder, add actual screen setup code here)
-
-  // Set up flash memory (Placeholder, add actual flash setup code here)
+  // Init screen
 }
 
 void loop() {
-  // Handle heartbeat (LED blink)
   handleHeartbeat();
-
-  // Handle detected button presses from ISR
   handleButtonPresses();
-
-  // Sleep or idle if needed (Placeholder, you can add power management here)
 }
 
-//----------------------------
-// Helper Functions
-//----------------------------
+// LFS
 
-static void handleButtonPresses() {
-  if (like_detected) {
-    updateLikeStatus();  // Handle like detected
+static void initialize_lfs() {
+    Serial.println("Mount LittleFS");
+  if (!LittleFS.begin()) {
+    Serial.println("LittleFS mount failed");
+    return;
   }
-
-  if (dislike_detected) {
-    updateDislikeStatus();  // Handle dislike detected
+  else{
+    Serial.println("Little FS Mounted Successfully");
   }
 }
 
-static void handleHeartbeat() {
-#if (0)  
-  // Heartbeat: Blink LED every 500 ms
-  digitalWrite(LED_PIN, LOW);
-  delay(500);
-  digitalWrite(LED_PIN, HIGH);
-  delay(500);
-#endif
-}
 
-static void updateLikeStatus() {
-  Serial.println("Like");
-  like_detected = false;
-  // Add more logic here to update flash memory or screen, if necessary
-}
+static int8_t readFile(const char *path, int16_t *read_num) {
+  Serial.printf("Reading file: %s\r\n", path);
 
-static void updateDislikeStatus() {
-  Serial.println("Dislike");
-  dislike_detected = false;
-  // Add more logic here to update flash memory or screen, if necessary
-}
-
-//----------------------------
-// Interrupt Service Routines (ISR)
-//----------------------------
-
-IRAM_ATTR static void ISR_like_press() {
-  // Debouncing for like button press
-  if (like_update_time > millis()) {
-    like_update_time = 0;
+  File file = LittleFS.open(path, "r");
+  if (!file) {
+    Serial.println("Failed to open file for reading");
+    return -1;
   }
 
-  if ((millis() - like_update_time) > debounce_ms) {  //Check for debounce time
-    digitalWrite(LED_PIN, LOW);
-    like_detected = true; 
-    like_update_time = millis();
+  while (file.available()) { 
+    *read_num = file.read();
+    Serial.printf("int read from file: %d\r\n", *read_num);
   }
+  file.close();
+  return 0;
 }
 
-IRAM_ATTR static void ISR_dislike_press() {
-  // Debouncing for dislike button press
-  if (dislike_update_time > millis()) {
-    dislike_update_time = 0;
-  }
+static void writeFile(const char *path, const char *message) {
+  Serial.printf("Writing file: %s\n", path);
 
-  if ((millis() - dislike_update_time) > debounce_ms) { //Check for debounce time
-    digitalWrite(LED_PIN, HIGH);
-    dislike_detected = true;
-    dislike_update_time = millis();
+  File file = LittleFS.open(path, "w");
+  if (!file) {
+    Serial.println("Failed to open file for writing");
+    return;
   }
+  if (file.print(message)) {
+    Serial.println("File written");
+  } else {
+    Serial.println("Write failed");
+  }
+  delay(2000);  // Make sure the CREATE and LASTWRITE times are different
+  file.close();
 }
