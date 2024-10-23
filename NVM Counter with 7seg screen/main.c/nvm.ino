@@ -1,9 +1,30 @@
+int16_t like_counter = 0;
+int16_t previous_like_counter = 0;
 
 void handleCounterRollback() {  //7 segment display has 4 numbers
     if(like_counter > 9999)
   {
     like_counter = 0;
   }
+}
+
+void increaseLikeCounter() {
+  like_counter++;
+}
+
+void decreaseLikeCounter() {
+  like_counter--;
+}
+
+void setupLikeCounter() {
+  if(-1 == readFile("/like_counter.txt", &like_counter)) // Try to read file, updating like_counter
+  {
+    // Fail: Create file, write "0000"
+    writeFile("/like_counter.txt", "0000");
+  }
+
+  // Init counter update check
+  previous_like_counter = like_counter;
 }
 
 // Updates the like counter and saves it to non-volatile memory (NVM)
@@ -43,8 +64,6 @@ void setupNvm() {
 int8_t readFile(const char *path, int16_t *read_num) {
   uint8_t digit_position = 3;
   uint16_t read_num_temp = 0;
-  
-  Serial.printf("Reading file: %s\r\n", path);
 
   File file = LittleFS.open(path, "r");
   if (!file) {
@@ -58,7 +77,7 @@ int8_t readFile(const char *path, int16_t *read_num) {
   }
 
   *read_num = read_num_temp;
-  Serial.printf("int read from file: %d\r\n", *read_num);
+  Serial.printf("File content: %d\r\n", *read_num);
 
   file.close();
   return 0;
@@ -66,7 +85,6 @@ int8_t readFile(const char *path, int16_t *read_num) {
 
 // Writes a string message to a file in the filesystem
 void writeFile(const char *path, const char *message) {
-  Serial.printf("Writing file: %s\n", path);
 
   File file = LittleFS.open(path, "w");
   if (!file) {
@@ -74,10 +92,9 @@ void writeFile(const char *path, const char *message) {
     return;
   }
   if (file.print(message)) {
-    Serial.println("File written");
   } else {
     Serial.println("Write failed");
   }
-  delay(2000);  // Make sure the CREATE and LASTWRITE times are different
+  delay(1000);  // Make sure the CREATE and LASTWRITE times are different
   file.close();
 }

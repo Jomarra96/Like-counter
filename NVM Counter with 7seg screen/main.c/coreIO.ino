@@ -1,15 +1,14 @@
-#if (0)
-void handleButtonPresses();
-static void updateLikeStatus();
-static void updateDislikeStatus();
-void setup_buttons();
-void setup_ISR();
-void handleButtonPresses(); // Handle detected button presses from ISR
+const uint8_t D2_PIN = 4;        // D2 (GPIO4)
+const uint8_t D1_PIN = 5;        // D1 (GPIO5)
+const uint16_t debounce_ms = 2000;  // ESP8266/32 have issues with falling/rising edges! (https://github.com/espressif/arduino-esp32/issues/1111) 
 
-// Interrupt Service Routines (ISR)
-IRAM_ATTR static void ISR_like_press();
-IRAM_ATTR static void ISR_dislike_press();
-#endif
+// Variables for debounce and detection states
+volatile uint32_t like_update_time = 0;
+volatile uint32_t dislike_update_time = 0;
+volatile bool like_detected = false;
+volatile bool dislike_detected = false;
+
+const uint8_t LED_PIN = 2;       // LED pin
 
 void setupButtons(){
     // Set up buttons as inputs with pull-up resistors
@@ -26,12 +25,12 @@ void setupISR(){
 void handleButtonPresses() {
   if (like_detected) {
     updateLikeStatus();
-    like_counter++;
+    increaseLikeCounter();
   }
 
   if (dislike_detected) {
     updateDislikeStatus();
-    like_counter--;
+    decreaseLikeCounter();
   }
 }
 
@@ -72,4 +71,18 @@ IRAM_ATTR static void ISR_dislike_press() {
     dislike_detected = true;
     dislike_update_time = millis();
   }
+}
+
+void setupLed() {
+    // Set up LED pin as output
+    pinMode(LED_PIN, OUTPUT);
+}
+
+void handleHeartbeat() {
+#if (1)  
+  digitalWrite(LED_PIN, LOW);
+  delay(500);
+  digitalWrite(LED_PIN, HIGH);
+  delay(500);
+#endif
 }
