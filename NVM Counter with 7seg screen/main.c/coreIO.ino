@@ -1,6 +1,6 @@
 const uint8_t D2_PIN = 4;        // D2 (GPIO4)
 const uint8_t D1_PIN = 5;        // D1 (GPIO5)
-const uint16_t debounce_ms = 2000;  // ESP8266/32 have issues with falling/rising edges! (https://github.com/espressif/arduino-esp32/issues/1111) 
+const uint16_t debounce_ms = 1000;  // ESP8266/32 have issues with falling/rising edges! (https://github.com/espressif/arduino-esp32/issues/1111) 
 
 // Variables for debounce and detection states
 volatile uint32_t like_update_time = 0;
@@ -54,7 +54,6 @@ IRAM_ATTR static void ISR_like_press() {
   }
 
   if ((millis() - like_update_time) > debounce_ms) {  //Check for debounce time
-    digitalWrite(LED_PIN, LOW);
     like_detected = true; 
     like_update_time = millis();
   }
@@ -67,7 +66,6 @@ IRAM_ATTR static void ISR_dislike_press() {
   }
 
   if ((millis() - dislike_update_time) > debounce_ms) { //Check for debounce time
-    digitalWrite(LED_PIN, HIGH);
     dislike_detected = true;
     dislike_update_time = millis();
   }

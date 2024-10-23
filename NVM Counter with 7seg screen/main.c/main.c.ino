@@ -1,4 +1,6 @@
+#include <Arduino.h>
 #include <LittleFS.h>
+#include <TM1637Display.h>
 
 void setup() {
   // Init Serial Communication
@@ -10,16 +12,25 @@ void setup() {
   setupISR();
   setupNvm(); // Init LittleFS
   setupLikeCounter();
-  // Init screen
-
+  setup_display();
 }
 
 void loop() {
-  
-  handleHeartbeat();
+  static int16_t like_count = 0;
+  static int16_t temp_like_count = 0;
+
+  getCounter(&like_count);
+  temp_like_count = like_count;
+
   handleButtonPresses();
   handleCounterRollback();
   handleCounterUpdate();
+
+  getCounter(&like_count);
+  if(temp_like_count != like_count)
+  {
+    update_display();
+  }
 }
 
 

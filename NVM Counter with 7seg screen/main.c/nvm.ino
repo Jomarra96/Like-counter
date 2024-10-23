@@ -8,6 +8,14 @@ void handleCounterRollback() {  //7 segment display has 4 numbers
   }
 }
 
+void getCounter(int16_t* counter){
+  *counter = like_counter;
+}
+
+void setCounter(int16_t counter){
+  like_counter = counter;
+}
+
 void increaseLikeCounter() {
   like_counter++;
 }
@@ -32,7 +40,7 @@ void handleCounterUpdate() {
   char number_char[5] = {0};
   if(previous_like_counter != like_counter) // Update NVM if counter has been updated
   {
-    uint16_t like_counter_temp = like_counter;
+    int16_t like_counter_temp = like_counter;
 
     // Convert the counter value to a 4-digit character string
     for(uint8_t i = 0; i < 4; i++)
@@ -63,7 +71,7 @@ void setupNvm() {
 // Reads a file from the filesystem and interprets it as a 4 digit number
 int8_t readFile(const char *path, int16_t *read_num) {
   uint8_t digit_position = 3;
-  uint16_t read_num_temp = 0;
+  int16_t read_num_temp = 0;
 
   File file = LittleFS.open(path, "r");
   if (!file) {
