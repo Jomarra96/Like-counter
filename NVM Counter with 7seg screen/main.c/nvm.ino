@@ -1,5 +1,5 @@
-int16_t like_counter = 0;
-int16_t previous_like_counter = 0;
+static int16_t like_counter = 0;
+static int16_t previous_like_counter = 0;
 
 void handleCounterRollback() {  //7 segment display has 4 numbers
     if(like_counter > 9999)
@@ -14,6 +14,10 @@ void getCounter(int16_t* counter){
 
 void setCounter(int16_t counter){
   like_counter = counter;
+}
+
+void resetCounter(){
+  setCounter(0);
 }
 
 void increaseLikeCounter() {
