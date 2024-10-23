@@ -1,4 +1,4 @@
-void setup_led() {
+void setupLed() {
     // Set up LED pin as output
     pinMode(LED_PIN, OUTPUT);
 }

@@ -11,13 +11,13 @@ IRAM_ATTR static void ISR_like_press();
 IRAM_ATTR static void ISR_dislike_press();
 #endif
 
-void setup_buttons(){
+void setupButtons(){
     // Set up buttons as inputs with pull-up resistors
     pinMode(D1_PIN, INPUT_PULLUP);
     pinMode(D2_PIN, INPUT_PULLUP);    
 }
 
-void setup_ISR(){
+void setupISR(){
   // Attach interrupts for button presses
   attachInterrupt(digitalPinToInterrupt(D1_PIN), ISR_like_press, RISING);
   attachInterrupt(digitalPinToInterrupt(D2_PIN), ISR_dislike_press, RISING);
@@ -26,23 +26,25 @@ void setup_ISR(){
 void handleButtonPresses() {
   if (like_detected) {
     updateLikeStatus();
+    like_counter++;
   }
 
   if (dislike_detected) {
     updateDislikeStatus();
+    like_counter--;
   }
 }
 
 static void updateLikeStatus() {
   Serial.println("Like");
   like_detected = false;
-  // Add more logic here to update flash memory or screen, if necessary
+  // Update NVM
 }
 
 static void updateDislikeStatus() {
   Serial.println("Dislike");
   dislike_detected = false;
-  // Add more logic here to update flash memory or screen, if necessary
+  // Update NVM
 }
 
 // ISRs

@@ -11,97 +11,40 @@ volatile uint32_t dislike_update_time = 0;
 volatile bool like_detected = false;
 volatile bool dislike_detected = false;
 
-// Constants and Pin Definitions
-
-static int8_t file_status = -1;
-
-// "Main" ino
-void setup();
-void loop();
-
-#if (0)
-// Button/LED
-void handleHeartbeat();
-
-//FS
-void initialize_lfs();
-void writeFile();
-int8_t readFile();
-#endif
-
-//----------------------------
-// Setup Function
-//----------------------------
+int16_t like_counter = 0;
+int16_t previous_like_counter = 0;
 
 void setup() {
   // Init Serial Communication
   Serial.begin(115200);
   Serial.println("Start");
 
-  // Init IO
-  setup_led();
-  setup_buttons();
-  setup_ISR();
+  setupLed();
+  setupButtons();
+  setupISR();
+  setupNvm(); // Init flash memory
 
-  // Init flash memory
-  static int16_t like_counter = 0;
-  initialize_lfs();
-  writeFile("/like_counter.txt", "12");
-  readFile("/like_counter.txt", &like_counter);
-  Serial.printf("Current like counter %d", like_counter);
+  if(-1 == readFile("/like_counter.txt", &like_counter)) // Try to read file, updating like_counter
+  {
+    // Fail: Create file, write "0000"
+    writeFile("/like_counter.txt", "0000");
+  }
+
+  // Init counter update check
+  previous_like_counter = like_counter;
 
   // Init screen
 }
 
 void loop() {
+  
   handleHeartbeat();
   handleButtonPresses();
-}
+  handleCounterRollback();
+  handleCounterUpdate();
 
-// LFS
-
-static void initialize_lfs() {
-    Serial.println("Mount LittleFS");
-  if (!LittleFS.begin()) {
-    Serial.println("LittleFS mount failed");
-    return;
-  }
-  else{
-    Serial.println("Little FS Mounted Successfully");
-  }
+  Serial.printf("Current like counter %d\n", like_counter);
 }
 
 
-static int8_t readFile(const char *path, int16_t *read_num) {
-  Serial.printf("Reading file: %s\r\n", path);
 
-  File file = LittleFS.open(path, "r");
-  if (!file) {
-    Serial.println("Failed to open file for reading");
-    return -1;
-  }
-
-  while (file.available()) { 
-    *read_num = file.read();
-    Serial.printf("int read from file: %d\r\n", *read_num);
-  }
-  file.close();
-  return 0;
-}
-
-static void writeFile(const char *path, const char *message) {
-  Serial.printf("Writing file: %s\n", path);
-
-  File file = LittleFS.open(path, "w");
-  if (!file) {
-    Serial.println("Failed to open file for writing");
-    return;
-  }
-  if (file.print(message)) {
-    Serial.println("File written");
-  } else {
-    Serial.println("Write failed");
-  }
-  delay(2000);  // Make sure the CREATE and LASTWRITE times are different
-  file.close();
-}
