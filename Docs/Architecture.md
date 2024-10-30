@@ -1,60 +1,48 @@
-# BOARD
+# SYSTEM
+
+## BOARD
 
 [Lolin NodeMCU ESP8266](https://www.make-it.ca/nodemcu-details-specifications/)
-4MB Flash, 64KB RAM
+4MB Flash, 64KB RAM. Noice.
 
-HW I had on hand
+HW I had laying around.
 Widely supported, allows C, C++, Arduino and uPy
 
-# FW
-
-## Framework
-
-Chose Arduino over bare C, uPy, etc.
-
-**Advantages**
-
-Does the trick and enables for quickest implementation, without hitting its limits.
-- Available drivers for TM16xx
-- Simple code
-- LittleFS supported
-- Flash time/size irrelevant for this project
-- Got ISR needed for button detection
-	
-**Disadvantages**
-- No debugging in most boards
-- Flashing takes >30s
-- Huge initial size, lots of boilerplate (>200KB)
-- Lots of externs, hard to follow fns
-
-## Code
-
-The ISRs detect button presses, triggering flags to increase, decrease or reset the counter.
-
-The main loop checks the counter value, updating the flash memory and the screen when it detects a change.
-
-# SCREEN
+## SCREEN
 
 [7 Segment display](https://www.amazon.de/dp/B07XQ2M188?ref=ppx_yo2ov_dt_b_fed_asin_title)
 
-- simple and cheap. low power can be achieved by only lighting the display momentarily after button press. TM16XX Driver included
+- Simple and cheap. TM16XX Driver included.
 
-# BUTTON
+## BUTTONS
 
-[Standard push button](https://www.amazon.de/gp/product/B0BXZZTH26/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1)
+[Standard push button](https://www.amazon.de/gp/product/B0BXZZTH26/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1).
 
-Like - D1 (GPIO4)
+## CASE
 
-Dislike - D2 (GPIO5)
+3D printed.
 
-# CASE
+## POWER
 
-3D printed
+Wall adapter available nearby -> 5V into ESP8266 microUSB. No battery or Low power needed.
 
-# POWER
-
-Wall adapter available -> 5V + regulator to 3v3
-
-# Non Volatile Memory
+## Non Volatile Memory
 
 Flash in ESP8266
+
+# SW Framework
+
+I Chose Arduino over bare C, uPy, etc. I know, I know, it's just for children, hobbyists and PHD's, but hear me out.
+I haven't played with it in over 4 years, and they got version 2.0 now!
+
+**Advantages**
+- Allows for quickest implementation, without hitting its limits in this simple project.
+- There are available drivers for TM16xx & LittleFS on ESP8266(!!)
+	
+**Disadvantages**
+- No debugging in most boards
+- Flashing takes >30s. Ew. Apparently they include by default a metric ton of std libs, if not all of them. Ewww.
+- Huge footprint, lots of boilerplate because of the previously stated (>200KB).
+- Abuse of externs/macros, hard to follow fns.
+
+Now, will Arduino be worth it? Hope so, check the review file for an answer!
