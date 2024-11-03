@@ -4,6 +4,9 @@ A like counter box with buttons, a screen and permanent memory.
 
 This device detects Like/Dislike/Rst button presses and displays the current counter on a 7-segment screen. The counter value is protected against power failures by routinely storing it on the device Flash.
 
+![1730398126322](https://github.com/user-attachments/assets/f102efa9-b3e8-420e-80cb-10e587725714)
+![1730548084366](https://github.com/user-attachments/assets/cd69c498-098e-4ac2-b436-41b7927aaee7)
+
 ## Background
 
 I currently work in automotive, so it was obvious I had to print the infamous [AUTOSAREEEE](https://www.reddit.com/r/embedded/comments/leq366/comment/gmiq6d0/) post and stick it on a wall by the office. Given most of my colleagues pretty much breathe AUTOSAR .arxml's, I now want to measure how fond they are of the omnipresent standard.
