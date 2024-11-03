@@ -19,12 +19,24 @@ On power up, it tries reading a valid value from flash. Otherwise the counter re
 
 Get the files in your machine, download LittleFS and TM1637Display libraries from the IDE and flash into the ESP8266 board. Follow the pinout from \Docs\Wiring. Other ESP8266 versions may not work.
 
-## Requirements
+## Features
+
 R1 Display like count.
+
 R2 Detect like.
+
 R3 Detect dislike.
+
 R4 Detect reset.
+
 R5 Keep counter on power off.
+
 R6 Mountable on a foam wall.
+
 R7 Cost <20EUR.
+
 R8 Dev time <1mo - <20h total time.
+
+## TODO
+
+Nothing, all done

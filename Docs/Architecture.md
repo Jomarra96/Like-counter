@@ -44,5 +44,6 @@ I haven't played with it in over 4 years, and they got version 2.0 now!
 - Flashing takes >30s. Ew. Apparently they include by default a metric ton of std libs, if not all of them. Ewww.
 - Huge footprint, lots of boilerplate because of the previously stated (>200KB).
 - Abuse of externs/macros, hard to follow fns.
+- Multiple bugs within the IDE
 
 Now, will Arduino be worth it? Hope so, check the review file for an answer!
