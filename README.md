@@ -20,7 +20,7 @@ On power up, it tries reading a valid value from flash. Otherwise the counter re
 
 ## Replicate
 
-Get the files in your machine, download LittleFS and TM1637Display libraries from the IDE and flash into the ESP8266 board. Follow the pinout from \Docs\Wiring. Other ESP8266 versions may not work.
+Get the files in your machine, download LittleFS and TM1637Display libraries from the IDE and flash into the ESP8266 board. Follow the pinout from \Docs\Wiring. Other ESP8266 versions may not work. Use M3x10 bolts for the ESP8266 and the lid, and M2x4 for the 7-segment display.
 
 ## Features
 
