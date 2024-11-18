@@ -15,7 +15,7 @@ Could I have just gotten a commercial option? Absolutely. Do they look ugly AF? 
 
 ## Behavior
 
-On Like/Dislike/Flash buttons press, the internal counter updates, then gets stored in Flash and displayed on screen.
+On Like/Dislike/RST buttons press, the internal counter updates, then gets stored in Flash and displayed on screen.
 On power up, it tries reading a valid value from flash. Otherwise the counter resets.
 
 ## Replicate
