@@ -6,6 +6,7 @@ This device detects Like/Dislike/Rst button presses and displays the current cou
 
 ![1730398126322](https://github.com/user-attachments/assets/f102efa9-b3e8-420e-80cb-10e587725714)
 ![1730548084366](https://github.com/user-attachments/assets/cd69c498-098e-4ac2-b436-41b7927aaee7)
+![2024-11-19_18h31_32](https://github.com/user-attachments/assets/ed7edb01-5d28-4bd1-8359-39e6fea43022)
 
 ## Background
 
