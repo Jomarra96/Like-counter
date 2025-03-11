@@ -21,10 +21,10 @@ void setupButtons(){
 }
 
 void setupISR(){
-  // Attach interrupts for button presses
-  attachInterrupt(digitalPinToInterrupt(D1_PIN), ISR_like_press, RISING);
-  attachInterrupt(digitalPinToInterrupt(D2_PIN), ISR_dislike_press, RISING);
-  attachInterrupt(digitalPinToInterrupt(D7_PIN), ISR_reset_counter, RISING);
+  // Attach interrupts for button presses. Edge type doesn't matter. ESP32 treats both as the same.
+  attachInterrupt(digitalPinToInterrupt(D1_PIN), ISR_like_press, FALLING);
+  attachInterrupt(digitalPinToInterrupt(D2_PIN), ISR_dislike_press, FALLING);
+  attachInterrupt(digitalPinToInterrupt(D7_PIN), ISR_reset_counter, FALLING);
 }
 
 void handleButtonPresses() {
