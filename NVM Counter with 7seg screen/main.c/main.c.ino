@@ -3,6 +3,7 @@
 #include <TM1637Display.h>
 
 void setup() {
+  
   // Init Serial Communication
   Serial.begin(115200);
   Serial.println("Start");

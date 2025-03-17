@@ -1,7 +1,7 @@
 const uint8_t D1_PIN = 5;        // D1 (GPIO5)
 const uint8_t D2_PIN = 4;        // D2 (GPIO4)
 const uint8_t D7_PIN = 13;        // D7 (GPIO13)
-const uint16_t debounce_ms = 1000;  // ESP8266/32 have issues with falling/rising edges! (https://github.com/espressif/arduino-esp32/issues/1111) 
+const uint16_t debounce_ms = 500;  // ESP8266/32 arduino libs have issues with falling/rising edges! (https://github.com/espressif/arduino-esp32/issues/1111) 
 
 // Variables for debounce and detection states
 volatile uint32_t like_update_time = 0;
@@ -85,8 +85,8 @@ IRAM_ATTR static void ISR_reset_counter() {
 }
 
 void setupLed() {
-    // Set up LED pin as output
     pinMode(LED_PIN, OUTPUT);
+    digitalWrite(LED_PIN, HIGH); //I don't wanna see it for now
 }
 
 void handleHeartbeat() {
