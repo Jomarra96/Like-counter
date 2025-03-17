@@ -4,7 +4,7 @@ static int16_t previous_like_counter = 0;
 void handleCounterRollback() {  //7 segment display has 4 numbers
     if(like_counter > 9999)
   {
-    like_counter = 0;
+    setCounter(0);
   }
 }
 
@@ -21,18 +21,27 @@ void resetCounter(){
 }
 
 void increaseLikeCounter() {
-  like_counter++;
+  int16_t counter = 0;
+  getCounter(&counter);
+  counter++;
+  setCounter(counter);
 }
 
 void decreaseLikeCounter() {
-  like_counter--;
+  int16_t counter = 0;
+  getCounter(&counter);
+  counter--;
+  setCounter(counter);
 }
 
 void setupLikeCounter() {
+  //Let some time for the nvm to stabilize at startup
+  delay(50); 
   if(-1 == readFile("/like_counter.txt", &like_counter)) // Try to read file, updating like_counter
   {
     // Fail: Create file, write "0000"
     writeFile("/like_counter.txt", "0000");
+    Serial.printf("Error: NVM empty/corrupted\n");
   }
 
   // Init counter update check
@@ -62,7 +71,7 @@ void handleCounterUpdate() {
 }
 
 void setupNvm() {
-    Serial.println("Mount LittleFS");
+  Serial.println("Mount LittleFS");
   if (!LittleFS.begin()) {
     Serial.println("LittleFS mount failed");
     return;
@@ -107,6 +116,6 @@ void writeFile(const char *path, const char *message) {
   } else {
     Serial.println("Write failed");
   }
-  delay(1000);  // Make sure the CREATE and LASTWRITE times are different
+  delay(50);  // Make sure the CREATE and LASTWRITE times are different. Why?
   file.close();
 }
